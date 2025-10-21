@@ -22,3 +22,8 @@ def solve(timespan, x1_0, y1_0, x2_0, y2_0, vx1_0, vy1_0, vx2_0, vy2_0, m1, m2):
     y0 = [x1_0, y1_0, vx1_0, vy1_0, x2_0, y2_0, vx2_0, vy2_0]
     solution = solve_ivp(two_body, timespan, y0, t_eval=time_eval, args=(m1,m2))
     return solution
+
+def center_of_mass(x1,y1,x2,y2,m1,m2):
+    x = (x1*m1 + x2*m2)/(m1+m2)
+    y = (y1*m1 + y2*m2)/(m1+m2)
+    return [x,y]
