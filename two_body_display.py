@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
-import trajectory_calc
-from trajectory_calc import solve
-from trajectory_calc import center_of_mass
+import two_body_solve
+from two_body_solve import solve
+from two_body_solve import center_of_mass
 
 if __name__ == "__main__":
 
