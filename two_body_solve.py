@@ -20,7 +20,7 @@ def two_body(t,y,m1,m2):
 def solve(timespan, x1_0, y1_0, x2_0, y2_0, vx1_0, vy1_0, vx2_0, vy2_0, m1, m2):
     time_eval = np.linspace(*timespan, 50000)
     y0 = [x1_0, y1_0, vx1_0, vy1_0, x2_0, y2_0, vx2_0, vy2_0]
-    solution = solve_ivp(two_body, timespan, y0, t_eval=time_eval, args=(m1,m2))
+    solution = solve_ivp(two_body, timespan, y0, t_eval=time_eval, args=(m1,m2), rtol=1e-10, atol=1e-13, method="RK45")
     return solution
 
 # Function computing the coordinates of the center of mass.
