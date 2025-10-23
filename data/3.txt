@@ -1,0 +1,8 @@
+time_days = 1
+distance = 1e7      
+m1 = 5e24          
+m2 = 1e22           
+vx1_0 = 0
+vy1_0 = -270     
+vx2_0 = 0
+vy2_0 = 2697      
