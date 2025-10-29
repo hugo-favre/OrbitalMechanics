@@ -7,11 +7,11 @@ from readfile import read_input_file
 import sys
 
 if __name__ == "__main__":
-    # Recovering initial conditions from the input file
+    # Recovering initial conditions from the input file.
     filename = sys.argv[1]
     params = read_input_file(filename)
     if 'a' in params:
-        # In this case, we input orbital elements. to solve, we first convert to cartesian.
+        # The input is the orbital elements. Conversion to cartesian values.
         a = params['a']
         r_vec, v_vec = oe_to_rv(a=a, e=params['e'], i_deg=params.get('i_deg', 0),
         RAAN_deg=params.get('RAAN_deg', 0), argp_deg=params.get('argp_deg', 0), nu_deg=params.get('nu_deg', 0))
@@ -21,7 +21,7 @@ if __name__ == "__main__":
         t = calc_period(a)*n_orbits
         
     else:
-        # In this case, we already input cartesian values.
+        # Input is the cartesian values.
         t = params["time_days"]*24*3600
         x0 = params["x0"]
         y0 = params["y0"]
@@ -30,11 +30,11 @@ if __name__ == "__main__":
         vy0 = params["vy0"]
         vz0 = params["vz0"]
 
-    # We solve the two-body differential equation and then plot the results.
+    # Solving the two-body differential equation and then plot the results.
     solution = solve((0,t), x0, y0, z0, vx0, vy0, vz0)    
     x, y, z = solution.y[0], solution.y[1], solution.y[2]
 
-    # Plotting
+    # Plotting the orbit.
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.plot(x/1e3, y/1e3, z/1e3, color='royalblue', lw=1.5, label='Satellite')

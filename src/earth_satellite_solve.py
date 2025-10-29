@@ -20,7 +20,7 @@ def solve(timespan, x_0, y_0, z_0, vx_0, vy_0, vz_0,):
     solution = solve_ivp(two_body_3D, timespan, coord_0, t_eval = time_eval, rtol=1e-10, atol=1e-13, method = "RK45")
     return solution
 
-# Function converting the current position and speed of the satellite to orbital elements.
+# Function converting the cartesians coordinates of the satellite to its orbital elements.
 def rv_to_oe(r_vec, v_vec):
     r = np.array(r_vec, dtype=float)
     v = np.array(v_vec, dtype=float)
@@ -75,6 +75,7 @@ def rv_to_oe(r_vec, v_vec):
     # Convert to conventional units
     return [a,e,np.degrees(i), np.degrees(RAAN), np.degrees(argp), np.degrees(nu), h, energy]
 
+# Function converting the orbital elements of the satellite to its cartesians coordinates.
 def oe_to_rv(a, e, i_deg, RAAN_deg, argp_deg, nu_deg):
     i = np.radians(i_deg)
     RAAN = np.radians(RAAN_deg)
@@ -85,11 +86,9 @@ def oe_to_rv(a, e, i_deg, RAAN_deg, argp_deg, nu_deg):
     r = p / (1 + e*np.cos(nu))
     h = np.sqrt(mu * p)
 
-    # position et vitesse dans le plan orbital
     r_orb = np.array([r*np.cos(nu), r*np.sin(nu), 0.0])
     v_orb = np.array([-mu/h * np.sin(nu), mu/h * (e + np.cos(nu)), 0.0])
 
-    # matrices de rotation
     R3_W = np.array([[ np.cos(RAAN), -np.sin(RAAN), 0],
                      [ np.sin(RAAN),  np.cos(RAAN), 0],
                      [ 0, 0, 1]])
