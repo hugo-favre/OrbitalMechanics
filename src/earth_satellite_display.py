@@ -45,6 +45,9 @@ if __name__ == "__main__":
     h = np.cross(r0, v0)
     h_hat = h / np.linalg.norm(h)
 
+    # Fictive trace, to be deleted by the animation
+    fig.add_trace(go.Surface())
+
     # Earth sphere.
     R_earth = 6371e3
     u = np.linspace(0, 2*np.pi, 60)
@@ -78,7 +81,7 @@ if __name__ == "__main__":
     ))
 
     # North-South axis.
-    pole_length = R_earth * 1.5 
+    pole_length = R_earth * 1.5
     fig.add_trace(go.Scatter3d(
         x=[0, 0],
         y=[0, 0],
@@ -86,6 +89,18 @@ if __name__ == "__main__":
         mode="lines",
         line=dict(color="white", width=4),
         name="Earth rotation axis"
+    ))
+
+    # Origin of longitude
+    vernal_length = R_earth * 1.5
+    fig.add_trace(go.Scatter3d(
+        x=[-vernal_length, vernal_length],
+        y=[0, 0],
+        z=[0, 0],
+        mode="lines",
+        line=dict(color="white", width=5), 
+        name="Vernal equinox direction",
+        showlegend=True
     ))
 
     # Orbit.
@@ -128,4 +143,52 @@ if __name__ == "__main__":
     fig.update_layout(scene_camera=dict(
         eye=dict(x=1.5, y=1.5, z=0.8)
     ))
+
+    # Animating
+    frames = [
+        go.Frame(
+            data=[
+                go.Scatter3d(
+                    x=[r_x[k]], y=[r_y[k]], z=[r_z[k]],
+                    mode="markers",
+                    marker=dict(color="darkorange", size=6),
+                    name="Satellite"
+                )
+            ],
+            name=f"frame{k}"
+        )
+        for k in range(0, len(r_x), int(len(r_x)/500)) 
+    ]
+    fig.frames = frames
+
+    fig.update_layout(
+        updatemenus=[{
+            "type": "buttons",
+            "showactive": False,
+            "buttons": [
+                {
+                    "label": "▶️ Play",
+                    "method": "animate",
+                    "args": [None, {
+                        "frame": {"duration": 20, "redraw": True},
+                        "fromcurrent": True,
+                        "transition": {"duration": 0}
+                    }]
+                },
+                {
+                    "label": "⏸ Pause",
+                    "method": "animate",
+                    "args": [[None], {
+                        "frame": {"duration": 0, "redraw": False},
+                        "mode": "immediate",
+                        "transition": {"duration": 0}
+                    }]
+                }
+            ],
+            "x": 0.05, "y": 0.05,
+            "xanchor": "left", "yanchor": "bottom",
+            "bgcolor": "rgba(0,0,0,0.5)",
+            "bordercolor": "white"
+        }]
+    )
     fig.show()
