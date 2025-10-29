@@ -1,0 +1,7 @@
+n_orbits = 5
+a = 42164e3
+e = 1e-5
+i_deg = 0
+RAAN_deg = 0
+argp_deg = 0
+nu_deg = 180
