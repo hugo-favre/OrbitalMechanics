@@ -17,7 +17,7 @@ def two_body_3D(t,coord):
 def solve(timespan, x_0, y_0, z_0, vx_0, vy_0, vz_0,):
     time_eval = np.linspace(*timespan, 50000)
     coord_0 = [x_0, y_0, z_0, vx_0, vy_0, vz_0]
-    solution = solve_ivp(two_body_3D, timespan, coord_0, t_eval = time_eval, rtol=1e-10, atol=1e-13, method = "RK45")
+    solution = solve_ivp(two_body_3D, timespan, coord_0, t_eval = time_eval, rtol=1e-12, atol=1e-15, method = "RK45")
     return solution
 
 # Function converting the cartesians coordinates of the satellite to its orbital elements.
@@ -47,23 +47,23 @@ def rv_to_oe(r_vec, v_vec):
     i = np.arccos(h[2] / h_norm)
 
     if n_norm != 0:
-        RAAN = np.arccos(n[0] / n_norm)
-        if n[1] < 0:
-            RAAN = 2*np.pi - RAAN
+        RAAN = np.arctan2(n[1], n[0])
+        RAAN = RAAN % (2*np.pi)
     else:
         RAAN = 0.0
 
     if n_norm != 0 and e > 1e-12:
-        argp = np.arccos(np.dot(n, e_vec) / (n_norm * e))
-        if e_vec[2] < 0:
-            argp = 2*np.pi - argp
+        argp = np.arctan2(np.dot(np.cross(n, e_vec), h) / h_norm,
+                        np.dot(n, e_vec))
+        argp = argp % (2*np.pi)
     else:
         argp = 0.0
 
     if e > 1e-12:
-        nu = np.arccos(np.dot(e_vec, r) / (e * r_norm))
-        if np.dot(r, v) < 0:
-            nu = 2*np.pi - nu
+        nu = np.arctan2(np.dot(np.cross(e_vec, r), h) / (h_norm * e),
+                np.dot(e_vec, r) / e)
+        if nu < 0:
+            nu += 2*np.pi
     else:
         if n_norm != 0:
             nu = np.arccos(np.dot(n, r) / (n_norm * r_norm))
@@ -72,7 +72,6 @@ def rv_to_oe(r_vec, v_vec):
         else:
             nu = 0.0
 
-    # Convert to conventional units
     return [a,e,np.degrees(i), np.degrees(RAAN), np.degrees(argp), np.degrees(nu), h, energy]
 
 # Function converting the orbital elements of the satellite to its cartesians coordinates.
@@ -103,7 +102,6 @@ def oe_to_rv(a, e, i_deg, RAAN_deg, argp_deg, nu_deg):
     r_ECI = R @ r_orb
     v_ECI = R @ v_orb
     return r_ECI, v_ECI
-
 
 def calc_period(a):
     return 2*np.pi*np.sqrt(a**3/mu)
