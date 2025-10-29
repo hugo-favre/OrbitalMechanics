@@ -1,0 +1,7 @@
+n_orbits = 10
+a = 6971e3         
+e = 0.001
+i_deg = 97.8
+RAAN_deg = 0
+argp_deg = 90
+nu_deg = 0

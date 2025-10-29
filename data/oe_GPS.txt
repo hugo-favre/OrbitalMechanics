@@ -1,0 +1,7 @@
+n_orbits = 3
+a = 26571e3   
+e = 1e-4
+i_deg = 55
+RAAN_deg = 0
+argp_deg = 0
+nu_deg = 0
