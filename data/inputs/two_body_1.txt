@@ -1,5 +1,7 @@
+mode : two_body_display
+perturbations : none
 time_days = 30
-distance = 3.84e8         
+r = 3.84e8         
 m1 = 5.972e24      
 m2 = 7.348e22      
 vx1_0 = 0

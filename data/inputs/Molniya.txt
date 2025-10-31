@@ -1,3 +1,5 @@
+mode : orbit_display, orbit_analysis
+perturbations : none
 n_orbits = 6
 a = 2.6121e7     
 e = 0.737

@@ -1,5 +1,7 @@
+mode : two_body_display
+perturbations : none
 time_days = 5
-distance = 1e7
+r = 1e7
 m1 = 4e24
 m2 = 4e24
 vx1_0 = 0
