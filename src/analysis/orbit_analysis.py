@@ -8,7 +8,17 @@ import os
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 OUTPUT_DIR = os.path.join(PROJECT_ROOT, 'data', 'outputs')
 
-def orbit_analysis(a, e, i, RAAN, argp, nu, n_orbits):
+def orbit_analysis(params):
+    # Retrieving parameters from the dictionary.
+    a = params["a"]
+    e = params["e"]
+    i = params.get("i_deg", 0)
+    RAAN = params.get("RAAN_deg", 0)
+    argp = params.get("argp_deg", 0)
+    nu = params.get("nu_deg", 0)
+    n_orbits = int(params.get("n_orbits", 1))
+
+    # Converting them in order to solve.
     r_vec, v_vec = oe_to_rv(a, e, i, RAAN, argp, nu)
     x0, y0, z0 = r_vec
     vx0, vy0, vz0 = v_vec 
@@ -40,7 +50,6 @@ def orbit_analysis(a, e, i, RAAN, argp, nu, n_orbits):
     argp_list = np.array(argp_list)
     nu_list = np.array(nu_list)
     
-
     # Plotting the results.
     plt.figure(figsize=(8,6))
     plt.subplot(3,1,1)
@@ -85,11 +94,3 @@ def orbit_analysis(a, e, i, RAAN, argp, nu, n_orbits):
     output_path = os.path.join(OUTPUT_DIR, "orbital_elements_evolution_2.png")
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close('all')
-        
-
-if __name__ == "__main__":
-    # Recovering initial conditions from the input file.
-    filename = sys.argv[1]
-    params = read_input_file(filename)
-    orbit_analysis(a=params['a'], e=params['e'], i=params.get('i_deg', 0),
-    RAAN=params.get('RAAN_deg', 0), argp=params.get('argp_deg', 0), nu=params.get('nu_deg', 0), n_orbits=params['n_orbits'])

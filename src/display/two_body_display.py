@@ -7,15 +7,22 @@ import os
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 OUTPUT_DIR = os.path.join(PROJECT_ROOT, 'data', 'outputs')
 
-def twobody_display(t, r, m1, m2, v1_0, v2_0):
-    vx1_0, vy1_0 = v1_0
-    vx2_0, vy2_0 = v2_0
+def twobody_display(params):
+    # Retrieving parameters from the dictonary
+    t = params["time_days"]
+    r = params["r"]
+    m1 = params['m1']
+    m2 = params['m2']
+    vx1_0 = params['vx1_0']
+    vy1_0 = params['vy1_0']
+    vx2_0 = params['vx2_0']
+    vy2_0 = params['vy2_0']
 
-    # We choose to represent the initial bodies on the X-axis.
+    # Representing the initial bodies on the X-axis.
     r1 = (-m2/(m1+m2))*r
     r2 = (m1/(m1+m2))*r
 
-    # We solve the two-body differential equation and then plot the results.
+    # Solving the two-body differential equation and then plot the results.
     solution = solve_twobody((0,t*24*3600), r1, 0, r2, 0, vx1_0, vy1_0, vx2_0, vy2_0, m1, m2)    
     x1, y1 = solution.y[0], solution.y[1]
     x2, y2 = solution.y[4], solution.y[5]
@@ -47,6 +54,7 @@ def twobody_display(t, r, m1, m2, v1_0, v2_0):
     output_path = os.path.join(OUTPUT_DIR, "two_body_simulation_1.png")
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close('all')
+
     # Plot in the non-rotating frame attached to m1
     plt.figure(figsize=(6,6))
     newx2 = x2-x1
