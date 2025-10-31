@@ -1,8 +1,14 @@
 import numpy as np
 import plotly.graph_objects as go
+from moviepy import *
+from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 import sys
 from src.integrators import solve
 from src.tools import oe_to_rv, calc_period, read_input_file, R_EARTH
+
+import os
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+OUTPUT_DIR = os.path.join(PROJECT_ROOT, 'data', 'outputs')
 
 def display(a, e, i, RAAN, argp, nu, n_orbits): 
     r_vec, v_vec = oe_to_rv(a, e, i, RAAN, argp, nu)
@@ -167,7 +173,37 @@ def display(a, e, i, RAAN, argp, nu, n_orbits):
             "bordercolor": "white"
         }]
     )
-    fig.show()
+    # fig.show()
+    
+    
+    # --- nouveau bloc pour la vidéo ---
+    frame_step = 100
+    frames = []
+    for k in range(0, len(x), frame_step):
+        fig = go.Figure()
+        # Terre
+        # ...
+        # Orbite jusqu’à k
+        fig.add_trace(go.Scatter3d(
+            x=x[:k+1], y=y[:k+1], z=z[:k+1],
+            mode="lines", line=dict(color="orange", width=5)
+        ))
+        # Satellite
+        fig.add_trace(go.Scatter3d(
+            x=[x[k]], y=[y[k]], z=[z[k]],
+            mode="markers", marker=dict(color="red", size=5)
+        ))
+        fig.update_layout(scene=dict(bgcolor="black", aspectmode='data'),
+                          margin=dict(l=0, r=0, t=0, b=0))
+        frame_path = os.path.join(OUTPUT_DIR, f"frame_{k:04d}.png")
+        fig.write_image(frame_path)
+        frames.append(frame_path)
+
+    # assembler la vidéo
+    output_video = os.path.join(OUTPUT_DIR, "earth_satellite_orbit.mp4")
+    clip = ImageSequenceClip(frames, fps=30)
+    clip.write_videofile(output_video, codec='libx264')
+
 
 if __name__ == "__main__":
     # Recovering initial conditions from the input file.

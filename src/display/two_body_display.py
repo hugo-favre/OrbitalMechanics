@@ -3,6 +3,10 @@ from src.integrators import solve_twobody
 from src.tools import center_of_mass, read_input_file
 import sys
 
+import os
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+OUTPUT_DIR = os.path.join(PROJECT_ROOT, 'data', 'outputs')
+
 def display(t, r, m1, m2, v1_0, v2_0):
     vx1_0, vy1_0 = v1_0
     vx2_0, vy2_0 = v2_0
@@ -40,6 +44,9 @@ def display(t, r, m1, m2, v1_0, v2_0):
     plt.legend() 
     plt.axis('equal')
 
+    output_path = os.path.join(OUTPUT_DIR, "two_body_simulation_1.png")
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.close('all')
     # Plot in the non-rotating frame attached to m1
     plt.figure(figsize=(6,6))
     newx2 = x2-x1
@@ -63,6 +70,10 @@ def display(t, r, m1, m2, v1_0, v2_0):
     plt.ylabel("Y relative to m1(m)")
     plt.legend()
     plt.axis("equal")
+
+    output_path = os.path.join(OUTPUT_DIR, "two_body_simulation_2.png")
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.close('all')
 
     # Plot in the non-rotating frame attached to G
     plt.figure(figsize=(6,6))
@@ -88,7 +99,9 @@ def display(t, r, m1, m2, v1_0, v2_0):
     plt.legend()
     plt.axis("equal")
 
-    plt.show()
+    output_path = os.path.join(OUTPUT_DIR, "two_body_simulation_3.png")
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.close('all')
 
 if __name__ == "__main__":
 
