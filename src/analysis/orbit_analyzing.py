@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
-from src.integrators.earth_satellite_solve import solve
-from src.tools.conversion import rv_to_oe, oe_to_rv, calc_period
-from src.tools.readfile import read_input_file
+from src.integrators import solve
+from src.tools import rv_to_oe, oe_to_rv, calc_period, read_input_file
 import sys
 import numpy as np
 

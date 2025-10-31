@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
-from src.integrators.two_body_solve import solve
-from src.tools.conversion  import center_of_mass
-from src.tools.readfile import read_input_file
+from src.integrators import solve_twobody
+from src.tools import center_of_mass, read_input_file
 import sys
 
 def display(t, r, m1, m2, v1_0, v2_0):
@@ -13,7 +12,7 @@ def display(t, r, m1, m2, v1_0, v2_0):
     r2 = (m1/(m1+m2))*r
 
     # We solve the two-body differential equation and then plot the results.
-    solution = solve((0,t*24*3600), r1, 0, r2, 0, vx1_0, vy1_0, vx2_0, vy2_0, m1, m2)    
+    solution = solve_twobody((0,t*24*3600), r1, 0, r2, 0, vx1_0, vy1_0, vx2_0, vy2_0, m1, m2)    
     x1, y1 = solution.y[0], solution.y[1]
     x2, y2 = solution.y[4], solution.y[5]
 

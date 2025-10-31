@@ -1,15 +1,15 @@
 import numpy as np
 from scipy.integrate import solve_ivp
-from src.tools.constants import mu_earth
+from src.tools import MU_EARTH
 
 # Function describing the two-body differential equation with m_earth >> m_satellite, 3D.
 def two_body_3D(t,coord):
     x,y,z,vx,vy,vz = coord
     r = np.sqrt(x**2 + y**2 + z**2)
 
-    ax = -mu_earth*x/(r**3)
-    ay = -mu_earth*y/(r**3)
-    az = -mu_earth*z/(r**3)
+    ax = -MU_EARTH*x/(r**3)
+    ay = -MU_EARTH*y/(r**3)
+    az = -MU_EARTH*z/(r**3)
 
     return [vx, vy, vz, ax, ay, az]
 

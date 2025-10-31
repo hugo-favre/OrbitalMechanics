@@ -1,10 +1,8 @@
 import numpy as np
 import plotly.graph_objects as go
 import sys
-from src.integrators.earth_satellite_solve import solve
-from src.tools.conversion import oe_to_rv, calc_period
-from src.tools.readfile import read_input_file
-from src.tools.constants import R_earth
+from src.integrators import solve
+from src.tools import oe_to_rv, calc_period, read_input_file, R_EARTH
 
 def display(a, e, i, RAAN, argp, nu, n_orbits): 
     r_vec, v_vec = oe_to_rv(a, e, i, RAAN, argp, nu)
@@ -30,9 +28,9 @@ def display(a, e, i, RAAN, argp, nu, n_orbits):
     # Earth sphere.
     u = np.linspace(0, 2*np.pi, 60)
     v = np.linspace(0, np.pi, 30)
-    x = R_earth * np.outer(np.cos(u), np.sin(v))
-    y = R_earth * np.outer(np.sin(u), np.sin(v))
-    z = R_earth * np.outer(np.ones(np.size(u)), np.cos(v))
+    x = R_EARTH * np.outer(np.cos(u), np.sin(v))
+    y = R_EARTH * np.outer(np.sin(u), np.sin(v))
+    z = R_EARTH * np.outer(np.ones(np.size(u)), np.cos(v))
     fig.add_trace(go.Surface(
         x=x, y=y, z=z,
         colorscale=[[0, "royalblue"], [1, "royalblue"]],
@@ -41,7 +39,7 @@ def display(a, e, i, RAAN, argp, nu, n_orbits):
     ))
 
     # Equatorial plane.
-    r_eq = max(a*(1+e)/np.sqrt(2), R_earth*np.sqrt(2))
+    r_eq = max(a*(1+e)/np.sqrt(2), R_EARTH*np.sqrt(2))
     r_orb = np.linspace(0, r_eq, 60)
     theta = np.linspace(0, 2*np.pi, 60)
     R, TH = np.meshgrid(r_orb, theta)
@@ -59,7 +57,7 @@ def display(a, e, i, RAAN, argp, nu, n_orbits):
     ))
 
     # North-South axis.
-    pole_length = R_earth * 1.5
+    pole_length = R_EARTH * 1.5
     fig.add_trace(go.Scatter3d(
         x=[0, 0],
         y=[0, 0],
@@ -70,7 +68,7 @@ def display(a, e, i, RAAN, argp, nu, n_orbits):
     ))
 
     # Origin of longitude
-    vernal_length = R_earth * 1.5
+    vernal_length = R_EARTH * 1.5
     fig.add_trace(go.Scatter3d(
         x=[-vernal_length, vernal_length],
         y=[0, 0],
@@ -97,7 +95,7 @@ def display(a, e, i, RAAN, argp, nu, n_orbits):
         name="Initial position"
     ))
 
-    max_range = max(np.max(np.abs([r_x, r_y, r_z])), R_earth*np.sqrt(2))
+    max_range = max(np.max(np.abs([r_x, r_y, r_z])), R_EARTH*np.sqrt(2))
     fig.update_layout(
         scene=dict(
             xaxis=dict(visible=False),
