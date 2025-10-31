@@ -1,37 +1,16 @@
-import matplotlib.pyplot as plt
-from earth_satellite_solve import solve
-from earth_satellite_solve import rv_to_oe
-from earth_satellite_solve import oe_to_rv
-from earth_satellite_solve import calc_period
-from readfile import read_input_file
-import sys
 import numpy as np
 import plotly.graph_objects as go
+import sys
+from src.integrators.earth_satellite_solve import solve
+from src.tools.conversion import oe_to_rv, calc_period
+from src.tools.readfile import read_input_file
+from src.tools.constants import R_earth
 
-if __name__ == "__main__":
-    # Recovering initial conditions from the input file.
-    filename = sys.argv[1]
-    params = read_input_file(filename)
-    if 'a' in params:
-        # The input is the orbital elements. Conversion to cartesian values.
-        a = params['a']
-        e = params['e']
-        r_vec, v_vec = oe_to_rv(a=a, e=params['e'], i_deg=params.get('i_deg', 0),
-        RAAN_deg=params.get('RAAN_deg', 0), argp_deg=params.get('argp_deg', 0), nu_deg=params.get('nu_deg', 0))
-        x0, y0, z0 = r_vec
-        vx0, vy0, vz0 = v_vec
-        n_orbits = params['n_orbits']
-        t = calc_period(a)*n_orbits
-        
-    else:
-        # Input is the cartesian values.
-        t = params["time_days"]*24*3600
-        x0 = params["x0"]
-        y0 = params["y0"]
-        z0 = params["z0"]
-        vx0 = params["vx0"]
-        vy0 = params["vy0"]
-        vz0 = params["vz0"]
+def display(a, e, i, RAAN, argp, nu, n_orbits): 
+    r_vec, v_vec = oe_to_rv(a, e, i, RAAN, argp, nu)
+    x0, y0, z0 = r_vec
+    vx0, vy0, vz0 = v_vec 
+    t = calc_period(a)*n_orbits
 
     # Solving the two-body differential equation and then plot the results.
     solution = solve((0,t), x0, y0, z0, vx0, vy0, vz0)    
@@ -49,7 +28,6 @@ if __name__ == "__main__":
     fig.add_trace(go.Surface())
 
     # Earth sphere.
-    R_earth = 6371e3
     u = np.linspace(0, 2*np.pi, 60)
     v = np.linspace(0, np.pi, 30)
     x = R_earth * np.outer(np.cos(u), np.sin(v))
@@ -192,3 +170,10 @@ if __name__ == "__main__":
         }]
     )
     fig.show()
+
+if __name__ == "__main__":
+    # Recovering initial conditions from the input file.
+    filename = sys.argv[1]
+    params = read_input_file(filename)
+    display(a=params['a'], e=params['e'], i=params.get('i_deg', 0),
+    RAAN=params.get('RAAN_deg', 0), argp=params.get('argp_deg', 0), nu=params.get('nu_deg', 0), n_orbits=params['n_orbits'])

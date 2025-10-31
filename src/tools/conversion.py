@@ -1,24 +1,5 @@
 import numpy as np
-from scipy.integrate import solve_ivp
-mu = 3.986004418e14 
-
-# Function describing the two-body differential equation with m_earth >> m_satellite, 3D.
-def two_body_3D(t,coord):
-    x,y,z,vx,vy,vz = coord
-    r = np.sqrt(x**2 + y**2 + z**2)
-
-    ax = -mu*x/(r**3)
-    ay = -mu*y/(r**3)
-    az = -mu*z/(r**3)
-
-    return [vx, vy, vz, ax, ay, az]
-
-# Function computing the position of the satellite, given initial conditions.
-def solve(timespan, x_0, y_0, z_0, vx_0, vy_0, vz_0,):
-    time_eval = np.linspace(*timespan, 50000)
-    coord_0 = [x_0, y_0, z_0, vx_0, vy_0, vz_0]
-    solution = solve_ivp(two_body_3D, timespan, coord_0, t_eval = time_eval, rtol=1e-12, atol=1e-15, method = "RK45")
-    return solution
+from .constants import mu_earth
 
 # Function converting the cartesians coordinates of the satellite to its orbital elements.
 def rv_to_oe(r_vec, v_vec):
@@ -34,14 +15,14 @@ def rv_to_oe(r_vec, v_vec):
     n = np.cross(k, h)
     n_norm = np.linalg.norm(n)
 
-    energy = v_norm**2 / 2 - mu / r_norm
+    energy = v_norm**2 / 2 - mu_earth / r_norm
 
     if abs(energy) > 0:
-        a = -mu / (2 * energy)
+        a = -mu_earth / (2 * energy)
     else:
         a = np.inf
 
-    e_vec = (1/mu) * ( (v_norm**2 - mu/r_norm)*r - np.dot(r, v)*v )
+    e_vec = (1/mu_earth) * ( (v_norm**2 - mu_earth/r_norm)*r - np.dot(r, v)*v )
     e = np.linalg.norm(e_vec)
 
     i = np.arccos(h[2] / h_norm)
@@ -83,10 +64,10 @@ def oe_to_rv(a, e, i_deg, RAAN_deg, argp_deg, nu_deg):
 
     p = a * (1 - e**2)
     r = p / (1 + e*np.cos(nu))
-    h = np.sqrt(mu * p)
+    h = np.sqrt(mu_earth * p)
 
     r_orb = np.array([r*np.cos(nu), r*np.sin(nu), 0.0])
-    v_orb = np.array([-mu/h * np.sin(nu), mu/h * (e + np.cos(nu)), 0.0])
+    v_orb = np.array([-mu_earth/h * np.sin(nu), mu_earth/h * (e + np.cos(nu)), 0.0])
 
     R3_W = np.array([[ np.cos(RAAN), -np.sin(RAAN), 0],
                      [ np.sin(RAAN),  np.cos(RAAN), 0],
@@ -103,5 +84,12 @@ def oe_to_rv(a, e, i_deg, RAAN_deg, argp_deg, nu_deg):
     v_ECI = R @ v_orb
     return r_ECI, v_ECI
 
+# Function computing the period of an orbit knowing a.
 def calc_period(a):
-    return 2*np.pi*np.sqrt(a**3/mu)
+    return 2*np.pi*np.sqrt(a**3/mu_earth)
+
+# Function computing the coordinates of the center of mass.
+def center_of_mass(x1,y1,x2,y2,m1,m2):
+    x = (x1*m1 + x2*m2)/(m1+m2)
+    y = (y1*m1 + y2*m2)/(m1+m2)
+    return [x,y]
