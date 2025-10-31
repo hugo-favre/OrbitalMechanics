@@ -9,7 +9,7 @@ import os
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 OUTPUT_DIR = os.path.join(PROJECT_ROOT, 'data', 'outputs')
 
-def display(a, e, i, RAAN, argp, nu, n_orbits): 
+def orbit_display(a, e, i, RAAN, argp, nu, n_orbits): 
     r_vec, v_vec = oe_to_rv(a, e, i, RAAN, argp, nu)
     x0, y0, z0 = r_vec
     vx0, vy0, vz0 = v_vec 
@@ -207,5 +207,5 @@ if __name__ == "__main__":
     # Recovering initial conditions from the input file.
     filename = sys.argv[1]
     params = read_input_file(filename)
-    display(a=params['a'], e=params['e'], i=params.get('i_deg', 0),
+    orbit_display(a=params['a'], e=params['e'], i=params.get('i_deg', 0),
     RAAN=params.get('RAAN_deg', 0), argp=params.get('argp_deg', 0), nu=params.get('nu_deg', 0), n_orbits=params['n_orbits'])
