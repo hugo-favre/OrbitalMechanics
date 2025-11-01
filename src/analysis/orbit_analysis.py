@@ -49,48 +49,108 @@ def orbit_analysis(params):
     RAAN_list = np.array(RAAN_list)
     argp_list = np.array(argp_list)
     nu_list = np.array(nu_list)
-    
-    # Plotting the results.
-    plt.figure(figsize=(8,6))
-    plt.subplot(3,1,1)
-    plt.plot(solution.t/3600, a_list/1e3)
-    plt.ylim((np.min(a_list)-1) / 1e3 , (np.max(a_list)+1) / 1e3)
-    plt.ylabel("a (km)")
+   
+    # Crée une figure avec 3 lignes et 2 colonnes
+    fig, axs = plt.subplots(3, 2, figsize=(12, 9))
 
-    plt.subplot(3,1,2)
-    plt.plot(solution.t/3600, e_list)
-    plt.ylim(-0.2, np.max(e_list)+1)
-    plt.ylabel("e")
+    # === 1. a (demi-grand axe) ===
+    ax = axs[0, 0]
+    ax.plot(solution.t / 3600, a_list / 1e3)
+    ax.set_ylim((np.min(a_list) - 1) / 1e3, (np.max(a_list) + 1) / 1e3)
+    ax.set_ylabel("a (km)")
+    ax.set_xlabel("Temps (h)")
+    ax.set_title("Demi-grand axe (a)")
 
-    plt.subplot(3,1,3)
-    plt.plot(solution.t/3600, i_list)
-    plt.ylim(-10, 190)
-    plt.ylabel("i (°)")
-    plt.xlabel("Temps (h)")
+    # === 2. RAAN ===
+    ax = axs[0, 1]
+    ax.plot(solution.t / 3600, RAAN_list)
+    ax.set_ylim(-10, 370)
+    ax.set_ylabel("RAAN (°)")
+    ax.set_xlabel("Temps (h)")
+    ax.set_title("Ascension droite du nœud ascendant (RAAN)")
 
-    output_path = os.path.join(OUTPUT_DIR, "orbital_elements_evolution_1.png")
+    # === 3. e (excentricité) ===
+    ax = axs[1, 0]
+    ax.plot(solution.t / 3600, e_list)
+    ax.set_ylim(-0.2, np.max(e_list) + 1)
+    ax.set_ylabel("e")
+    ax.set_xlabel("Temps (h)")
+    ax.set_title("Excentricité (e)")
+
+    # === 4. Argument du périgée (ω ou argp) ===
+    ax = axs[1, 1]
+    ax.plot(solution.t / 3600, argp_list)
+    ax.set_ylim(-10, 370)
+    ax.set_ylabel("ω (°)")
+    ax.set_xlabel("Temps (h)")
+    ax.set_title("Argument du périgée (ω)")
+
+    # === 5. i (inclinaison) ===
+    ax = axs[2, 0]
+    ax.plot(solution.t / 3600, i_list)
+    ax.set_ylim(-10, 190)
+    ax.set_ylabel("i (°)")
+    ax.set_xlabel("Temps (h)")
+    ax.set_title("Inclinaison (i)")
+
+    # === 6. Anomalie vraie (ν ou nu) ===
+    ax = axs[2, 1]
+    ax.plot(solution.t / 3600, nu_list)
+    ax.set_ylim(-10, 370)
+    ax.set_ylabel("ν (°)")
+    ax.set_xlabel("Temps (h)")
+    ax.set_title("Anomalie vraie (ν)")
+
+    # Ajustement de la mise en page
+    plt.tight_layout(rect=[0, 0, 1, 0.97])
+    plt.suptitle("Évolution des éléments orbitaux", fontsize=14)
+
+    # Sauvegarde en un seul PNG
+    output_path = os.path.join(OUTPUT_DIR, "orbital_elements_evolution_combined.png")
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close('all')
+ 
+    # # Plotting the results.
+    # plt.figure(figsize=(8,6))
+    # plt.subplot(3,1,1)
+    # plt.plot(solution.t/3600, a_list/1e3)
+    # plt.ylim((np.min(a_list)-1) / 1e3 , (np.max(a_list)+1) / 1e3)
+    # plt.ylabel("a (km)")
+
+    # plt.subplot(3,1,2)
+    # plt.plot(solution.t/3600, e_list)
+    # plt.ylim(-0.2, np.max(e_list)+1)
+    # plt.ylabel("e")
+
+    # plt.subplot(3,1,3)
+    # plt.plot(solution.t/3600, i_list)
+    # plt.ylim(-10, 190)
+    # plt.ylabel("i (°)")
+    # plt.xlabel("Temps (h)")
+
+    # output_path = os.path.join(OUTPUT_DIR, "orbital_elements_evolution_1.png")
+    # plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    # plt.close('all')
         
-    plt.figure(figsize=(8,6))
-    plt.subplot(3,1,1)
-    plt.plot(solution.t/3600, RAAN_list)
-    plt.ylim(-10, 370)
-    plt.ylabel("RAAN (°)")
+    # plt.figure(figsize=(8,6))
+    # plt.subplot(3,1,1)
+    # plt.plot(solution.t/3600, RAAN_list)
+    # plt.ylim(-10, 370)
+    # plt.ylabel("RAAN (°)")
 
-    plt.subplot(3,1,2)
-    plt.plot(solution.t/3600, argp_list)
-    plt.ylim(-10, 370)
-    plt.ylabel("atgp (°)")
+    # plt.subplot(3,1,2)
+    # plt.plot(solution.t/3600, argp_list)
+    # plt.ylim(-10, 370)
+    # plt.ylabel("atgp (°)")
 
-    plt.subplot(3,1,3)
-    plt.plot(solution.t/3600, nu_list)
-    plt.ylim(-10, 370)
-    plt.ylabel("nu (°)")
-    plt.xlabel("Temps (h)")
+    # plt.subplot(3,1,3)
+    # plt.plot(solution.t/3600, nu_list)
+    # plt.ylim(-10, 370)
+    # plt.ylabel("nu (°)")
+    # plt.xlabel("Temps (h)")
 
-    plt.suptitle("Évolution des éléments orbitaux")
+    # plt.suptitle("Évolution des éléments orbitaux")
 
-    output_path = os.path.join(OUTPUT_DIR, "orbital_elements_evolution_2.png")
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    plt.close('all')
+    # output_path = os.path.join(OUTPUT_DIR, "orbital_elements_evolution_2.png")
+    # plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    # plt.close('all')

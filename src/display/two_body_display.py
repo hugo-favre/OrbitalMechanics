@@ -29,91 +29,84 @@ def twobody_display(params):
 
     xg,yg = center_of_mass(x1,y1,x2,y2,m1,m2)
 
-    # First plot in the Inertial Frame
-    plt.figure(figsize=(6,6))
-    plt.plot(x1, y1, color='blue', linewidth=0.5, label='m1')
-    plt.plot(x2, y2, color='red', linewidth=0.5, label='m2')
-    plt.plot(xg,yg , color='black', ls="--", linewidth=0.5, label='G')
+    # Plotting.
+    fig, axs = plt.subplots(3, 1, figsize=(6, 18))
+    # Inertial Frame. 
+    ax = axs[0]
+    ax.plot(x1, y1, color='blue', linewidth=0.5, label='m1')
+    ax.plot(x2, y2, color='red', linewidth=0.5, label='m2')
+    ax.plot(xg, yg, color='black', ls="--", linewidth=0.5, label='G')
 
-    plt.scatter(x1[0], y1[0], color='blue',s=20)
-    plt.scatter(x2[0], y2[0], color='red',s=20)
-    plt.scatter([0], [0], color="black", s=20)
+    ax.scatter(x1[0], y1[0], color='blue', s=20)
+    ax.scatter(x2[0], y2[0], color='red', s=20)
+    ax.scatter([0], [0], color="black", s=20)
+    ax.scatter(x1[-1], y1[-1], color="blue", marker='s', s=20)
+    ax.scatter(x2[-1], y2[-1], color="red", marker='s', s=20)
+    ax.scatter(xg[-1], yg[-1], color="black", marker='s', s=20)
 
-    plt.scatter(x1[-1], y1[-1], color="blue", marker='s', s=20)
-    plt.scatter(x2[-1], y2[-1], color="red", marker='s', s=20)
-    plt.scatter(xg[-1], yg[-1], color="black", marker='s', s=20)
+    ax.axhline(0, color='gray', linewidth=0.5)
+    ax.axvline(0, color='gray', linewidth=0.5)
+    ax.set_xlabel("X (m)")
+    ax.set_ylabel("Y (m)")
+    ax.legend()
+    ax.axis('equal')
+    ax.set_title("Inertial Frame")
 
-    plt.axhline(0, color='gray', linewidth=0.5) 
-    plt.axvline(0, color='gray', linewidth=0.5) 
-    
-    plt.xlabel("X(m)")
-    plt.ylabel("Y(m)")
-    plt.legend() 
-    plt.axis('equal')
+    # Non-rotating frame attached to m1. 
+    ax = axs[1]
+    newx2 = x2 - x1
+    newy2 = y2 - y1
+    newxg = xg - x1
+    newyg = yg - y1
 
-    output_path = os.path.join(OUTPUT_DIR, "two_body_simulation_1.png")
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    plt.close('all')
+    ax.plot(newx2, newy2, color='red', linewidth=0.5, label='m2')
+    ax.plot(newxg, newyg, color='black', ls='--', linewidth=0.5, label='G')
+    ax.scatter([0], [0], color='blue', s=20)
+    ax.scatter(newx2[0], newy2[0], color='red', s=20)
+    ax.scatter(newxg[0], newyg[0], color='black', s=20)
+    ax.scatter(newx2[-1], newy2[-1], color='red', marker='s', s=20)
+    ax.scatter(newxg[-1], newyg[-1], color='black', marker='s', s=20)
 
-    # Plot in the non-rotating frame attached to m1
-    plt.figure(figsize=(6,6))
-    newx2 = x2-x1
-    newy2 = y2-y1
-    newxg = xg-x1
-    newyg = yg-y1
-    plt.plot(newx2, newy2, color='red', linewidth=0.5, label='m2')
-    plt.plot(newxg, newyg, color='black', ls='--', linewidth=0.5, label='G')
+    ax.axhline(0, color='gray', linewidth=0.5)
+    ax.axvline(0, color='gray', linewidth=0.5)
+    ax.set_xlabel("X relative to m1 (m)")
+    ax.set_ylabel("Y relative to m1 (m)")
+    ax.legend()
+    ax.axis('equal')
+    ax.set_title("Frame attached to m1")
 
-    plt.scatter([0], [0], color='blue',s=20)
-    plt.scatter(newx2[0], newy2[0], color='red',s=20)
-    plt.scatter(newxg[0], newyg[0], color="black", s=20)
+    # Non-rotating frame attached to G. 
+    ax = axs[2]
+    newx1 = x1 - xg
+    newy1 = y1 - yg
+    newx2 = x2 - xg
+    newy2 = y2 - yg
 
-    plt.scatter(newx2[-1], newy2[-1], color="red", marker='s', s=20)
-    plt.scatter(newxg[-1], newyg[-1], color="black", marker='s', s=20)  
+    ax.plot(newx1, newy1, color='blue', linewidth=0.5, label='m1')
+    ax.plot(newx2, newy2, color='red', linewidth=0.5, label='m2')
+    ax.scatter([0], [0], color='black', s=20)
+    ax.scatter(newx1[0], newy1[0], color='blue', s=20)
+    ax.scatter(newx2[0], newy2[0], color='red', s=20)
+    ax.scatter(newx1[-1], newy1[-1], color='blue', marker='s', s=20)
+    ax.scatter(newx2[-1], newy2[-1], color='red', marker='s', s=20)
 
-    plt.axhline(0, color='gray', linewidth=0.5) 
-    plt.axvline(0, color='gray', linewidth=0.5) 
+    ax.axhline(0, color='gray', linewidth=0.5)
+    ax.axvline(0, color='gray', linewidth=0.5)
+    ax.set_xlabel("X relative to G (m)")
+    ax.set_ylabel("Y relative to G (m)")
+    ax.legend()
+    ax.axis('equal')
+    ax.set_title("Frame attached to G")
 
-    plt.xlabel("X relative to m1(m)")
-    plt.ylabel("Y relative to m1(m)")
-    plt.legend()
-    plt.axis("equal")
-
-    output_path = os.path.join(OUTPUT_DIR, "two_body_simulation_2.png")
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    plt.close('all')
-
-    # Plot in the non-rotating frame attached to G
-    plt.figure(figsize=(6,6))
-    newx1 = x1-xg
-    newy1 = y1-yg
-    newx2 = x2-xg
-    newy2 = y2-yg
-    plt.plot(newx1, newy1, color='blue', linewidth=0.5, label='m1')
-    plt.plot(newx2, newy2, color ='red', linewidth=0.5, label='m2')
-
-    plt.scatter([0], [0], color='black',s=20)
-    plt.scatter(newx1[0], newy1[0], color='blue',s=20)
-    plt.scatter(newx2[0], newy2[0], color="red", s=20)  
-
-    plt.scatter(newx1[-1], newy1[-1], color="blue", marker='s', s=20)
-    plt.scatter(newx2[-1], newy2[-1], color="red", marker='s', s=20)
-
-    plt.axhline(0, color='gray', linewidth=0.5) 
-    plt.axvline(0, color='gray', linewidth=0.5) 
-    
-    plt.xlabel("X relative to G(m)")
-    plt.ylabel("Y relative to G(m)")
-    plt.legend()
-    plt.axis("equal")
-
-    output_path = os.path.join(OUTPUT_DIR, "two_body_simulation_3.png")
+    # Saving.
+    plt.tight_layout()
+    output_path = os.path.join(OUTPUT_DIR, "two_body_simulation_combined.png")
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close('all')
 
 if __name__ == "__main__":
 
-    # Recovering initial conditions from the input file
+    # Recovering initial conditions from the input file.
     filename = sys.argv[1]
     params = read_input_file(filename)
     
