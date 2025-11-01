@@ -4,7 +4,7 @@ from src.analysis.orbit_analysis import orbit_analysis
 from src.tools.readfile import read_input_file
 
 def main():
-    filename = "data/inputs/two_body_3.txt"
+    filename = "data/inputs/Molniya.txt"
     params = read_input_file(filename)
 
     mode = params['mode']
